@@ -7,6 +7,8 @@ $(document).ready(()=>{
   socket.emit('get online users');
   //Each user should be in the general channel by default.
   socket.emit('user changed channel', "General");
+  // Get existing channels and their messages
+  socket.emit('get channels');
 
   $('#create-user-btn').click((e)=>{
     e.preventDefault();
@@ -94,6 +96,16 @@ $(document).ready(()=>{
         </div>
       `);
     });
+  });
+
+  // Populate channels for late joiners
+  socket.on('get channels', (channels) => {
+    // Add any channels that dont already exist
+    for(channelName in channels){
+      if($(`.channel:contains('${channelName}'), .channel-current:contains('${channelName}')`).length === 0) {
+        $('.channels').append(`<div class="channel">${channelName}</div>`);
+      }
+    }
   });
 
   socket.on('get online users', (onlineUsers) => {

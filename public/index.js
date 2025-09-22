@@ -5,6 +5,8 @@ $(document).ready(()=>{
   let currentUser;
   // Get the online users from the server
   socket.emit('get online users');
+  //Each user should be in the general channel by default.
+  socket.emit('user changed channel', "General");
 
   $('#create-user-btn').click((e)=>{
     e.preventDefault();
@@ -42,6 +44,12 @@ $(document).ready(()=>{
       socket.emit('new channel', newChannel);
       $('#new-channel-input').val("");
     }
+  });
+
+  //Users can change the channel by clicking on its name.
+  $(document).on('click', '.channel', (e)=>{
+    let newChannel = e.target.textContent;
+    socket.emit('user changed channel', newChannel);
   });
 
   //socket listeners
